@@ -8,7 +8,13 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String?
+  id              String  @id @map("_id")
+  email           String  @unique
+  verified_email  Boolean? @default(false)
+  name            String
+  given_name      String
+  family_name     String
+  picture         String
+  locale          String
+  hd              String?
 }
