@@ -1,29 +1,32 @@
-import { createUser, getUsers } from '../../../lib/prisma/users'
+import { createUser, getUsers } from '@/lib/prisma/users'
+import CustomError from '@/lib/errors/CustomError'
+import NextCors from 'nextjs-cors'
+import globalExceptionHandler from '@/lib/utils/globalExceptionHandler'
 
 const handler = async (req, res) => {
-  if (req.method === 'GET') {
-    try {
-      const { users, error } = await getUsers()
-      if (error) throw new Error(error)
+  await NextCors(req, res, {
+    methods: ['GET', 'PUT', 'DELETE'],
+    origin: '*',
+    optionsSuccessStatus: 200,
+  })
+
+  try {
+    if (req.method === 'GET') {
+      const { users } = await getUsers()
       return res.status(200).json({ users })
-    } catch (error) {
-      return res.status(500).json({ error: error.message })
     }
-  }
 
-  if (req.method === 'POST') {
-    try {
-      const data = req.body
-      const { user, error } = await createUser(data)
-      if (error) throw new Error(error)
+    if (req.method === 'POST') {
+      const newUserData = req.body
+      const { user } = await createUser(newUserData)
       return res.status(200).json({ user })
-    } catch (error) {
-      return res.status(500).json({ error: error.message })
     }
-  }
 
-  res.setHeader('Allow', ['GET', 'POST'])
-  res.status(425).end(`Method ${req.method} is not allowed.`)
+    res.setHeader('Allow', ['GET', 'POST'])
+    throw new CustomError(405)
+  } catch (error) {
+    globalExceptionHandler(error, req, res)
+  }
 }
 
-export default handler
+export default handler;
