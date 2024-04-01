@@ -21,14 +21,14 @@ const handler = async (req, res) => {
 
     if (req.method === 'DELETE') {
       const { userId } = req.query
-      const { user, error } = await deleteUserById(userId)
+      const { user } = await deleteUserById(userId)
       return res.status(204).json({ user })
     }
 
     if (req.method === 'PUT') {
       const { userId } = req.query
       const dataToUpdate = req.body
-      const { user, error } = await updateUserById(userId, dataToUpdate)
+      const { user } = await updateUserById(userId, dataToUpdate)
       return res.status(200).json({ user })
     }
 
