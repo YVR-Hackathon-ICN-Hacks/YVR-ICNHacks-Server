@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FileUploader } from "react-drag-drop-files";
 import csvToJson from '../../lib/utils/csvToJson';
+import calculateHourlyAverages from '@/lib/utils/filterData';
 
 const fileTypes = ["csv"]
 
@@ -19,13 +20,13 @@ const FileUpload = () => {
         if (err) {
           console.log(err);
         } else {
-          console.log(data[-1]);
-          //TODO filter Function YS's algorithm will be implemented here
-
+          console.log(data);
+          //TODO YS's algorithm will be implemented here
+          console.log(calculateHourlyAverages(data))
 
 
         }
-      });      
+      });
     });
   };
   
