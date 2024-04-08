@@ -15,7 +15,8 @@
     "papaparse": "^5.4.1",
     "prisma": "^5.11.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-drag-drop-files": "^2.3.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
