@@ -18,3 +18,11 @@ model User {
   locale          String
   hd              String?
 }
+
+model Data {
+  id          String  @id @map("_id")
+  timestamp   String
+  temperature Float
+  air_flow    Float
+  co2         Float
+}
