@@ -21,8 +21,9 @@ model User {
 
 model Data {
   id          String  @id @map("_id")
-  timestamp   String
-  temperature Float
-  air_flow    Float
-  co2         Float
+  area_id     String
+  timestamp   DateTime
+  temperature Float?
+  air_flow    Float?
+  co2         Float?
 }
