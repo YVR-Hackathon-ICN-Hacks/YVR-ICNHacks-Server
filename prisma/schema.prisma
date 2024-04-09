@@ -27,3 +27,9 @@ model Data {
   air_flow    Float?
   co2         Float?
 }
+
+model AreaCode{
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  areaCode   String
+  dates      String[]
+}
