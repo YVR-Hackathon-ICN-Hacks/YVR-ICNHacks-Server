@@ -13,7 +13,7 @@ const handler = async (req, res) => {
 
   try {
     if (req.method === 'GET') {
-      const { date, area_id } = req.query
+      const { area_id, date } = req.query
 
       const { data } = await getDataByDateAndAreaId(date, area_id)
       
