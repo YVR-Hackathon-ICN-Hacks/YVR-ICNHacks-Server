@@ -1,4 +1,4 @@
-import { getDataByDateAndAreaId } from '@/lib/prisma/data'
+import { getDataByAreaId } from '@/lib/prisma/data'
 import globalExceptionHandler from '@/lib/utils/globalExceptionHandler'
 import NextCors from 'nextjs-cors'
 import CustomError from '@/lib/errors/CustomError'
@@ -13,9 +13,9 @@ const handler = async (req, res) => {
 
   try {
     if (req.method === 'GET') {
-      const { date, area_id } = req.query
+      const { area_id } = req.query
 
-      const { data } = await getDataByDateAndAreaId(date, area_id)
+      const { data } = await getDataByAreaId(area_id)
       
       return res.status(200).json({ data })
     }
