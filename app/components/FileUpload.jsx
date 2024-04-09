@@ -8,7 +8,7 @@ import extractUniqueDates from '../../lib/utils/extractUniqueDates';
 import checkForDuplicates from '../../lib/utils/checkForDuplicateAreaAndDate';
 
 const fileTypes = ["csv"]
-const endpoint = "http://localhost:3000";
+const endpoint = "https://yvr-icn-hacks-server.vercel.app";
 const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [dataToUpload, setDataToUpload] = useState(null);
