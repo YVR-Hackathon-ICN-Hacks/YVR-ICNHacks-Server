@@ -9,6 +9,7 @@ const fileTypes = ["csv"]
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
+  const [dataToUpload, setDataToUpload] = useState(null);
   const [extractedZoneCode, setExtractedZoneCode] = useState(null);
   const [isCodeRecognized, setIsCodeRecognized] = useState(true);
 
@@ -19,13 +20,35 @@ const FileUpload = () => {
 
       const text = await file.text();
       
-      csvToJson(text, (err, data) => {
+      csvToJson(text, async (err, data) => {
         if (err) {
           console.log(err);
         } else {
-          console.log(data);
+          // console.log(data);
           //Zone Code List : Additional list of zone codes will be added manually
-          console.log(calculateHourlyAverages(data))
+          // console.log(calculateHourlyAverages(data))
+
+          const dataToStore = calculateHourlyAverages(data)
+          setDataToUpload(dataToStore);
+
+          // console.log(dataToStore)
+
+          // try {
+          //   const response = await fetch('api/data', {
+          //     method: 'POST',
+          //     headers: {
+          //       'Content-Type': 'application/json',
+          //     },
+          //     body: JSON.stringify(dataToStore),
+          //   });
+          //   if (!response.ok) {
+          //     throw new Error('Network response was not ok');
+          //   }
+          //   const responseData = await response.json();
+          //   // console.log(responseData);
+          // } catch (error) {
+          //   console.error('Error while posting data:', error);
+          // }
 
           //Extracting Zone Code from the data
           const zoneCodeList = [
@@ -51,6 +74,30 @@ const FileUpload = () => {
     });
   };
 
+  const handleUpload = async () => {
+    if (!dataToUpload) {
+      console.error('No data to upload');
+      return;
+    }
+
+    try {
+      const response = await fetch('api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToUpload),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.error('Error while posting data:', error);
+    }
+  };
+
   return (
     <div>
       <FileUploader
@@ -59,6 +106,7 @@ const FileUpload = () => {
           name="file"
           types={fileTypes}
         />
+      <button onClick={handleUpload} style={{ marginTop: '20px' }}>Upload</button>
       <div>
         {extractedZoneCode && (
           <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f9f9f9' }}>
