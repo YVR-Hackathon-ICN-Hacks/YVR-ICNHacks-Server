@@ -24,31 +24,10 @@ const FileUpload = () => {
         if (err) {
           console.log(err);
         } else {
-          // console.log(data);
           //Zone Code List : Additional list of zone codes will be added manually
-          // console.log(calculateHourlyAverages(data))
 
           const dataToStore = calculateHourlyAverages(data)
           setDataToUpload(dataToStore);
-
-          // console.log(dataToStore)
-
-          // try {
-          //   const response = await fetch('api/data', {
-          //     method: 'POST',
-          //     headers: {
-          //       'Content-Type': 'application/json',
-          //     },
-          //     body: JSON.stringify(dataToStore),
-          //   });
-          //   if (!response.ok) {
-          //     throw new Error('Network response was not ok');
-          //   }
-          //   const responseData = await response.json();
-          //   // console.log(responseData);
-          // } catch (error) {
-          //   console.error('Error while posting data:', error);
-          // }
 
           //Extracting Zone Code from the data
           const zoneCodeList = [
