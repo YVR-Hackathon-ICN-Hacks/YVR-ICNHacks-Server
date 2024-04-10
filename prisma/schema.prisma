@@ -33,3 +33,14 @@ model AreaCode{
   areaCode   String
   dates      String[]
 }
+
+model AbnormalData {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  area_id     String
+  priority    Int
+  timestamp   DateTime
+  temperature Int       @default(0)
+  air_flow    Int       @default(0)
+  co2         Int       @default(0)
+  solved      Boolean   @default(false)
+}

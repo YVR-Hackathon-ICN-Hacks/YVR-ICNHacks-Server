@@ -6,9 +6,13 @@ import csvToJson from '../../lib/utils/csvToJson';
 import calculateHourlyAverages from '@/lib/utils/filterData';
 import extractUniqueDates from '../../lib/utils/extractUniqueDates';
 import checkForDuplicates from '../../lib/utils/checkForDuplicateAreaAndDate';
+import { getMeanAndSD, checkAbnormalData } from '../../lib/utils/checkAbnormalData';
+
+
 
 const fileTypes = ["csv"]
-const endpoint = "https://yvr-icn-hacks-server.vercel.app";
+// const endpoint = "https://yvr-icn-hacks-server.vercel.app";
+const endpoint = "http://localhost:3000";
 const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [dataToUpload, setDataToUpload] = useState(null);
@@ -19,7 +23,6 @@ const FileUpload = () => {
   useEffect(() => {
     getAreaCodeInDB();
   },[]);
-
 
   const getAreaCodeInDB = async () => {
     try {
@@ -49,7 +52,7 @@ const FileUpload = () => {
         } else {
           //Zone Code List : Additional list of zone codes will be added manually
           const dataToStore = calculateHourlyAverages(data)          
-          setDataToUpload(dataToStore);          
+          setDataToUpload(dataToStore);
 
           // Extracting Area Code from the data
           const getAreaCode = Object.values(data[0]);          
@@ -77,6 +80,50 @@ const FileUpload = () => {
       });
     });
   };
+
+  const CcheckAbnormalData = async () => {
+    // get mean and standard deviation
+    const [avgT, sdT, avgAF, sdAF, avgCO2, sdCO2] = await getMeanAndSD(dataToUpload);
+
+    let is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2;
+
+    const abnormalDataList = [];
+
+    // check for abnormal data
+    for (const item of dataToUpload) {
+      [is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2] = await checkAbnormalData(item, avgT, sdT, avgAF, sdAF, avgCO2, sdCO2);
+      if (is_abnormal) {
+        const abnormalData = {
+          area_id: item.area_id,
+          priority: priority,
+          timestamp: item.timestamp,
+          temperature: abnormal_temperature,
+          air_flow: abnormal_air_flow,
+          co2: abnormal_co2,
+          solved: false,
+        };
+
+        // add to the list of abnormal data
+        abnormalDataList.push(abnormalData);
+      }
+    }
+
+    // send abnormal data to the server
+    try {
+      const response = await fetch(`${endpoint}/api/abnormalData`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(abnormalDataList),    
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }    
+    } catch (error) {
+      throw error;
+    }
+  }
 
   const handleUpload = async () => {
     if (!dataToUpload) {
@@ -124,8 +171,13 @@ const FileUpload = () => {
     } catch (error) {
       console.error('Error while posting areaCode:', error);
     }
-  };
 
+    try {
+      CcheckAbnormalData();
+    } catch (error) {
+      console.error('Error while checking abnormal data:', error);
+    }
+  };
 
 
   return (
