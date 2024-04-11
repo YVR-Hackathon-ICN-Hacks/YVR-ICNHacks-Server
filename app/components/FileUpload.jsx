@@ -11,8 +11,7 @@ import { getMeanAndSD, checkAbnormalData } from '../../lib/utils/checkAbnormalDa
 
 
 const fileTypes = ["csv"]
-// const endpoint = "https://yvr-icn-hacks-server.vercel.app";
-const endpoint = "http://localhost:3000";
+const endpoint = "https://yvr-icn-hacks-server.vercel.app";
 const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [dataToUpload, setDataToUpload] = useState(null);
