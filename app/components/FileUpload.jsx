@@ -80,7 +80,7 @@ const FileUpload = () => {
     });
   };
 
-  const CcheckAbnormalData = async () => {
+  const findAbnormalData = async () => {
     // get mean and standard deviation
     const [avgT, sdT, avgAF, sdAF, avgCO2, sdCO2] = await getMeanAndSD(dataToUpload);
 
@@ -101,6 +101,8 @@ const FileUpload = () => {
           co2: abnormal_co2,
           solved: false,
         };
+
+        console.log(is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2, item.area_id, item.timestamp)
 
         // add to the list of abnormal data
         abnormalDataList.push(abnormalData);
@@ -172,7 +174,7 @@ const FileUpload = () => {
     }
 
     try {
-      CcheckAbnormalData();
+      findAbnormalData();
     } catch (error) {
       console.error('Error while checking abnormal data:', error);
     }
