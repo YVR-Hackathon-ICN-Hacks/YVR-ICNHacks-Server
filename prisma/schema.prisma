@@ -17,6 +17,7 @@ model User {
   picture         String
   locale          String
   hd              String?
+  pushToken       String? @default("")
 }
 
 model Data {
