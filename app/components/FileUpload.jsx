@@ -179,44 +179,82 @@ const FileUpload = () => {
   };
 
 
-  return (
-    <div>
+return (
+  <div style={{ padding: '20px', backgroundColor: '#e7eff6', borderRadius: '8px' }}>
+  <h1 style={{ color: '#102a43' }}>YVR-HACKS</h1>
+    <div style={{
+      border: '2px dashed #102a43',
+      borderRadius: '8px',
+      padding: '20px',
+      margin: '20px 0',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      backgroundColor: 'white',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+    }}>
       <FileUploader
-          multiple={true}
-          handleChange={handleChange}
-          name="file"
-          types={fileTypes}
-        />
-      <button onClick={handleUpload} style={{ marginTop: '20px' }}>Upload</button>    
-      <div>
-        {/* {extractedZoneCode && (
-          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f9f9f9' }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>Extracted Zone Code:</h3>
-            <p style={{ margin: '0' }}>{extractedZoneCode}</p>
+        multiple={true}
+        handleChange={handleChange}
+        name="file"
+        types={fileTypes}
+      />
+      <span style={{ color: '#334e68', marginTop: '10px' }}>Upload or drop a file right here</span>
+    </div>
+    <button style={{
+      backgroundColor: '#102a43',
+      color: 'white',
+      padding: '10px 20px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      marginBottom: '20px' // Add margin to separate from the following title
+    }}>Upload</button>
+    <div style={{
+      fontWeight: 'bold',
+      color: '#102a43',
+      padding: '10px',
+      margin: '20px 0',
+      backgroundColor: 'white',
+      borderRadius: '5px',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+      textAlign: 'center' // This centers the title text
+    }}>
+      Current Area Code & Time
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', backgroundColor: '#e7eff6' }}>
+      {areaCodeFromDB && areaCodeFromDB.areaCodes.map((areaCode) => (
+        <div key={areaCode.id} style={{ 
+          border: '1px solid #ccc', 
+          borderRadius: '5px', 
+          padding: '10px', 
+          minWidth: '200px', 
+          backgroundColor: 'white',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+        }}>
+          <div style={{ 
+            fontWeight: 'bold', 
+            marginBottom: '10px', 
+            color: '#102a43'
+          }}>
+            {areaCode.areaCode}
           </div>
-        )}
-        {!isCodeRecognized && (
-          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f9f9f9' }}>
-            <p style={{ margin: '0', color: 'red' }}>Unrecognized area code</p>
-          </div>
-        )} */}
-        <span>Current Area Code & Time</span>
-        <div>
-          {areaCodeFromDB && areaCodeFromDB.areaCodes.map((areaCode) => (                       
-            <div key={areaCode.id}>
-              <span>{areaCode.areaCode}</span>
-              {
-                areaCode.dates?.map((date) => (                                    
-                  <div key={date}>
-                    <span>{date}</span>
-                  </div>
-                ))  
-              }
+          {areaCode.dates.map((date) => (
+            <div key={date} style={{ 
+              marginBottom: '5px', 
+              color: '#334e68'
+            }}>
+              {date}
             </div>
           ))}
         </div>
-      </div>
+      ))}
     </div>
-  );
+  </div>
+);
+
 };
+
 export default FileUpload;
