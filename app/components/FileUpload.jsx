@@ -7,6 +7,7 @@ import calculateHourlyAverages from '@/lib/utils/filterData';
 import extractUniqueDates from '../../lib/utils/extractUniqueDates';
 import checkForDuplicates from '../../lib/utils/checkForDuplicateAreaAndDate';
 import { getMeanAndSD, checkAbnormalData } from '../../lib/utils/checkAbnormalData';
+import sendNotification from '../../lib/utils/sendNotification';
 
 
 
@@ -18,9 +19,11 @@ const FileUpload = () => {
   const [areaCodeFromDB, setAreaCodeFromDB] = useState(null);  
   const [isAreaCodeAndDateduplicated, setIsAreaCodeAndDateduplicated] = useState(false);
   const [newAreaCodeAndDate, setNewAreaCodeAndDate] = useState(null);
+  const [usersDataFromDB, setUsersDataFromDB] = useState(null);
 
   useEffect(() => {
     getAreaCodeInDB();
+    getUsersFromDB();
   },[]);
 
   const getAreaCodeInDB = async () => {
@@ -33,6 +36,21 @@ const FileUpload = () => {
       }
       const responseData = await response.json();      
       setAreaCodeFromDB(responseData);      
+    } catch (error) {
+      console.error('Error while getting area code:', error);
+    }
+  }
+
+  const getUsersFromDB = async () => {
+    try {
+      const response = await fetch(`${endpoint}/api/users`, {
+        method: 'GET',        
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();      
+      setUsersDataFromDB(responseData);      
     } catch (error) {
       console.error('Error while getting area code:', error);
     }
@@ -146,8 +164,36 @@ const FileUpload = () => {
         },
         body: JSON.stringify(dataToUpload),
       });
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
+      } else {
+        // Send notification
+        //Ready for the Notification
+        const pushTokens = [];
+
+        usersDataFromDB.users.forEach(user => {
+          if(user.pushToken !== ""){
+            pushTokens.push(user.pushToken);
+          }
+        });
+          
+        pushTokens.forEach(async pushToken => {
+          const data = JSON.stringify({
+              to: pushToken,
+              sound: "default",
+              title: "New Data Upload Alarm",
+              body: dataToUpload.area_id,
+              data: { someData: "data" },
+          });
+        
+          try {
+            await sendNotification(data);
+            console.log("Notification sent successfully to:", pushToken);
+          } catch (error) {
+            console.error('Error while sending notification:', error);
+          }
+        });
       }
       const responseData = await response.json();
       console.log(responseData);
@@ -171,7 +217,7 @@ const FileUpload = () => {
       console.log(responseData);
     } catch (error) {
       console.error('Error while posting areaCode:', error);
-    }
+    } 
 
     try {
       findAbnormalData();
