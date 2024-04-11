@@ -40,8 +40,8 @@ model AbnormalData {
   area_id     String
   priority    Int
   timestamp   DateTime
-  temperature Int       @default(0)
-  air_flow    Int       @default(0)
-  co2         Int       @default(0)
+  temperature String
+  air_flow    String
+  co2         String
   solved      Boolean   @default(false)
 }
