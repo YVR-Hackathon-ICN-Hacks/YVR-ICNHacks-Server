@@ -102,8 +102,6 @@ const FileUpload = () => {
           solved: false,
         };
 
-        console.log(is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2, item.area_id, item.timestamp)
-
         // add to the list of abnormal data
         abnormalDataList.push(abnormalData);
       }
