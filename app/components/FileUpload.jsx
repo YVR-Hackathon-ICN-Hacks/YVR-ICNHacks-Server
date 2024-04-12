@@ -143,7 +143,7 @@ const FileUpload = () => {
         const data = JSON.stringify({
             to: pushToken,
             sound: "default",
-            title: "New Data Upload Alarm",
+            title: "Abnormal Data Alarm",
             body: dataToUpload.area_id,
             data: { someData: "data" },
         });
