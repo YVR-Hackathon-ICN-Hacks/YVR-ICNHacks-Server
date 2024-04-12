@@ -19,11 +19,11 @@ const FileUpload = () => {
   const [areaCodeFromDB, setAreaCodeFromDB] = useState(null);  
   const [isAreaCodeAndDateduplicated, setIsAreaCodeAndDateduplicated] = useState(false);
   const [newAreaCodeAndDate, setNewAreaCodeAndDate] = useState(null);
-  const [usersDataFromDB, setUsersDataFromDB] = useState(null);
+  const [pushTokenFromDB, setPushTokenFromDB] = useState(null);
 
   useEffect(() => {
     getAreaCodeInDB();
-    getUsersFromDB();
+    getPushTokenFromDB();
   },[]);
 
   const getAreaCodeInDB = async () => {
@@ -42,16 +42,16 @@ const FileUpload = () => {
   }
 
   // this should be change to the get token
-  const getUsersFromDB = async () => {
+  const getPushTokenFromDB = async () => {
     try {
-      const response = await fetch(`${endpoint}/api/users`, {
+      const response = await fetch(`${endpoint}/api/pushToken`, {
         method: 'GET',        
       });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const responseData = await response.json();      
-      setUsersDataFromDB(responseData);      
+      setPushTokenFromDB(responseData);      
     } catch (error) {
       console.error('Error while getting area code:', error);
     }
@@ -173,9 +173,9 @@ const FileUpload = () => {
         //Ready for the Notification
         const pushTokens = [];
 
-        usersDataFromDB.users.forEach(user => {
-          if(user.pushToken !== ""){
-            pushTokens.push(user.pushToken);
+        pushTokenFromDB.pushToken.forEach(pushToken => {
+          if(pushToken.pushToken !== ""){
+            pushTokens.push(pushToken.pushToken);
           }
         });
           
