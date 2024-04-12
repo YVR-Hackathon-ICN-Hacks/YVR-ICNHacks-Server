@@ -101,7 +101,7 @@ const FileUpload = () => {
 
   const findAbnormalData = async () => {
     // get mean and standard deviation
-    const [avgT, sdT, avgAF, sdAF, avgCO2, sdCO2] = await getMeanAndSD(dataToUpload);
+    const [avgAF, sdAF, avgCO2, sdCO2] = await getMeanAndSD(dataToUpload);
 
     let is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2;
 
@@ -109,7 +109,7 @@ const FileUpload = () => {
 
     // check for abnormal data
     for (const item of dataToUpload) {
-      [is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2] = await checkAbnormalData(item, avgT, sdT, avgAF, sdAF, avgCO2, sdCO2);
+      [is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2] = await checkAbnormalData(item, avgAF, sdAF, avgCO2, sdCO2);
       if (is_abnormal) {
         const abnormalData = {
           area_id: item.area_id,
@@ -120,8 +120,6 @@ const FileUpload = () => {
           co2: abnormal_co2,
           solved: false,
         };
-
-        console.log(is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2, item.area_id, item.timestamp)
 
         // add to the list of abnormal data
         abnormalDataList.push(abnormalData);
