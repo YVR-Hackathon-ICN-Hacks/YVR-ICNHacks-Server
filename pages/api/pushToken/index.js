@@ -12,8 +12,8 @@ const handler = async (req, res) => {
 
   try {
     if (req.method === 'GET') {
-      const { pushToken } = await getAllPushToken()
-      return res.status(200).json({ pushToken })
+      const { data } = await getAllPushToken()
+      return res.status(200).json({ data })
     }
 
     if (req.method === 'POST') {
