@@ -120,7 +120,6 @@ const FileUpload = () => {
           co2: abnormal_co2,
           solved: false,
         };
-
         // add to the list of abnormal data
         abnormalDataList.push(abnormalData);
       }
