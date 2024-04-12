@@ -47,5 +47,6 @@ model AbnormalData {
 }
 
 model pushToken {  
-  pushToken    String @id @default(auto()) @map("_id") @db.ObjectId
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  pushToken     String 
 }
