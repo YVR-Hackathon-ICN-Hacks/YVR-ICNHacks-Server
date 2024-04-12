@@ -106,7 +106,7 @@ const FileUpload = () => {
     let is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2;
 
     const abnormalDataList = [];
-
+    let is_notification = false;
     // check for abnormal data
     for (const item of dataToUpload) {
       [is_abnormal, priority, abnormal_temperature, abnormal_air_flow, abnormal_co2] = await checkAbnormalData(item, avgAF, sdAF, avgCO2, sdCO2);
@@ -121,9 +121,40 @@ const FileUpload = () => {
           solved: false,
         };
 
+        is_notification = true;
+
         // add to the list of abnormal data
         abnormalDataList.push(abnormalData);
       }
+    }
+
+    if (is_notification) {
+      // Send notification
+      //Ready for the Notification
+      const pushTokens = [];
+
+      pushTokenFromDB.data.forEach(pushToken => {
+        if(pushToken.pushToken !== ""){
+          pushTokens.push(pushToken.pushToken);
+        }
+      });
+        
+      pushTokens.forEach(async pushToken => {
+        const data = JSON.stringify({
+            to: pushToken,
+            sound: "default",
+            title: "New Data Upload Alarm",
+            body: dataToUpload.area_id,
+            data: { someData: "data" },
+        });
+      
+        try {
+          await sendNotification(data);
+          console.log("Notification sent successfully to:", pushToken);
+        } catch (error) {
+          console.error('Error while sending notification:', error);
+        }
+      });
     }
 
     // send abnormal data to the server
@@ -227,43 +258,128 @@ const FileUpload = () => {
 
 
   return (
-    <div>
-      <FileUploader
+    <div
+      style={{
+        padding: "20px",
+        backgroundColor: "#e7eff6",
+        borderRadius: "8px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          color: "#102a43",
+          marginBottom: "20px",
+        }}
+      >
+        <img
+          src="/image/logo.png"
+          alt="YVR-HACKS Logo"
+          style={{ marginRight: "10px", height: "5em" }}
+        />
+        <h1>YVR-HACKS</h1>
+      </div>
+      <div
+        style={{
+          border: "2px dashed #102a43",
+          borderRadius: "8px",
+          padding: "20px",
+          margin: "20px 0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          backgroundColor: "white",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <FileUploader
           multiple={true}
           handleChange={handleChange}
           name="file"
           types={fileTypes}
         />
-      <button onClick={handleUpload} style={{ marginTop: '20px' }}>Upload</button>    
-      <div>
-        {/* {extractedZoneCode && (
-          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f9f9f9' }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>Extracted Zone Code:</h3>
-            <p style={{ margin: '0' }}>{extractedZoneCode}</p>
-          </div>
-        )}
-        {!isCodeRecognized && (
-          <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px', backgroundColor: '#f9f9f9' }}>
-            <p style={{ margin: '0', color: 'red' }}>Unrecognized area code</p>
-          </div>
-        )} */}
-        <span>Current Area Code & Time</span>
-        <div>
-          {areaCodeFromDB && areaCodeFromDB.areaCodes.map((areaCode) => (                       
-            <div key={areaCode.id}>
-              <span>{areaCode.areaCode}</span>
-              {
-                areaCode.dates?.map((date) => (                                    
-                  <div key={date}>
-                    <span>{date}</span>
-                  </div>
-                ))  
-              }
+        <span style={{ color: "#334e68", marginTop: "10px" }}>
+          Upload or drop a file right here
+        </span>
+      </div>
+      <button
+        onClick={handleUpload}
+        style={{
+          backgroundColor: "#102a43",
+          color: "white",
+          padding: "10px 20px",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          marginBottom: "20px",
+        }}
+      >
+        Upload
+      </button>
+      <div
+        style={{
+          fontWeight: "bold",
+          color: "#102a43",
+          padding: "10px",
+          margin: "20px 0",
+          backgroundColor: "white",
+          borderRadius: "5px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+          textAlign: "center",
+        }}
+      >
+        Current Area Code & Time
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: "20px",
+          backgroundColor: "#e7eff6",
+        }}
+      >
+        {areaCodeFromDB &&
+          areaCodeFromDB.areaCodes.map((areaCode) => (
+            <div
+              key={areaCode.id}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                padding: "10px",
+                minWidth: "200px",
+                backgroundColor: "white",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: "bold",
+                  marginBottom: "10px",
+                  color: "#102a43",
+                }}
+              >
+                {areaCode.areaCode}
+              </div>
+              {areaCode.dates.map((date) => (
+                <div
+                  key={date}
+                  style={{
+                    marginBottom: "5px",
+                    color: "#334e68",
+                  }}
+                >
+                  {date}
+                </div>
+              ))}
             </div>
           ))}
-        </div>
       </div>
     </div>
   );
 };
+
 export default FileUpload;
