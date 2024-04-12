@@ -41,6 +41,7 @@ const FileUpload = () => {
     }
   }
 
+  // this should be change to the get token
   const getUsersFromDB = async () => {
     try {
       const response = await fetch(`${endpoint}/api/users`, {
