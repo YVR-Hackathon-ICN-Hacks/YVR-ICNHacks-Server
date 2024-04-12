@@ -171,7 +171,7 @@ const FileUpload = () => {
         //Ready for the Notification
         const pushTokens = [];
 
-        pushTokenFromDB.pushToken.forEach(pushToken => {
+        pushTokenFromDB.data.forEach(pushToken => {
           if(pushToken.pushToken !== ""){
             pushTokens.push(pushToken.pushToken);
           }
