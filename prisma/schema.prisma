@@ -45,3 +45,7 @@ model AbnormalData {
   co2         String
   solved      Boolean   @default(false)
 }
+
+model pushToken {  
+  pushToken    String @id @default(auto()) @map("_id") @db.ObjectId
+}
